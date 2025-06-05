@@ -1,6 +1,4 @@
 #!/bin/bash
-
-##############  代理安装脚本  #################
 echo -e ''
 echo -e "\033[32m========Clash for OPNsense 代理全家桶一键安装脚本=========\033[0m"
 echo -e ''
@@ -45,8 +43,7 @@ rm -f /tmp/opnsense_menu_cache.xml
 rm -f /tmp/opnsense_acl_cache.json
 log "$YELLOW" "生成服务..."
 log "$YELLOW" "添加权限..."
-chmod +x bin/*
-chmod +x rc.d/*
+chmod +x ./bin/* ./rc.d/*
 cp -f bin/* "$BIN_DIR/" || log "$RED" "bin 文件复制失败！"
 cp -f www/* "$WWW_DIR/" || log "$RED" "www 文件复制失败！"
 cp -f rc.d/* "$RC_DIR/" || log "$RED" "rc.d 文件复制失败！"
@@ -110,63 +107,8 @@ else
   echo ""
 fi
 
-# 添加CN_IP别名
-log "$YELLOW" "添加CN_IP别名..."
-if grep -q "<content>https://ispip.clang.cn/all_cn.txt</content>" "$CONFIG_FILE"; then
-  echo "存在相同别名，忽略"
-  echo ""	
-else
-  awk '
-  BEGIN { inserted = 0 }
-  /<aliases\/>/ && inserted == 0 {
-    print "        <aliases>"
-    print "          <alias uuid=\"315eb669-41ef-48c2-90bb-d5c9d99a00eb\">"
-    print "            <enabled>1</enabled>"
-    print "            <name>CN_IP</name>"
-    print "            <type>urltable</type>"
-    print "            <path_expression/>"
-    print "            <proto/>"
-    print "            <interface/>"
-    print "            <counters>0</counters>"
-    print "            <updatefreq>1</updatefreq>"
-    print "            <content>https://ispip.clang.cn/all_cn.txt</content>"
-    print "            <password/>"
-    print "            <username/>"
-    print "            <authtype/>"
-    print "            <categories/>"
-    print "            <description>&#x4E2D;&#x56FD;IP&#x5217;&#x8868;</description>"
-    print "          </alias>"
-    print "        </aliases>"
-    inserted = 1
-    next
-  }
-  /<alias .*?>/ && inserted == 0 {
-    print "          <alias uuid=\"315eb669-41ef-48c2-90bb-d5c9d99a00eb\">"
-    print "            <enabled>1</enabled>"
-    print "            <name>CN_IP</name>"
-    print "            <type>urltable</type>"
-    print "            <path_expression/>"
-    print "            <proto/>"
-    print "            <interface/>"
-    print "            <counters>0</counters>"
-    print "            <updatefreq>1</updatefreq>"
-    print "            <content>https://ispip.clang.cn/all_cn.txt</content>"
-    print "            <password/>"
-    print "            <username/>"
-    print "            <authtype/>"
-    print "            <categories/>"
-    print "            <description>&#x4E2D;&#x56FD;IP&#x5217;&#x8868;</description>"
-    print "          </alias>"
-    inserted = 1
-  }
-  { print }
-  ' "$CONFIG_FILE" > "$TMP_FILE" && mv "$TMP_FILE" "$CONFIG_FILE"
-    echo "别名添加完成"
-    echo ""	
-fi
-
-# 添加防火墙规则（非中国IP走透明网关TUN_GW）
-log "$YELLOW" "添加防火墙规则..."
+# 添加防火墙规则（将流量导入TUN_GW）
+log "$YELLOW" "添加分流规则..."
 if grep -q "<gateway>TUN_GW</gateway>" "$CONFIG_FILE"; then
   echo "存在同名规则，忽略"
   echo ""
@@ -179,7 +121,6 @@ else
     print "      <interface>lan</interface>"
     print "      <ipprotocol>inet</ipprotocol>"
     print "      <statetype>keep state</statetype>"
-    print "      <descr>&#x56FD;&#x5916;IP&#x8D70;&#x900F;&#x660E;&#x7F51;&#x5173;</descr>"
     print "      <gateway>TUN_GW</gateway>"
     print "      <direction>in</direction>"
     print "      <floating>yes</floating>"
@@ -188,8 +129,7 @@ else
     print "        <network>lan</network>"
     print "      </source>"
     print "      <destination>"
-    print "        <address>CN_IP</address>"
-    print "        <not>1</not>"
+    print "        <any>1</any>"
     print "      </destination>"
     print "    </rule>"
     next
