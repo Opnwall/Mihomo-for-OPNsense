@@ -10,10 +10,10 @@ external-ui: /usr/local/etc/clash/ui
 secret: 123456
 tun:
   enable: true
-  stack: gvisor   #在freebsd平台上不能设置为system。
+  stack: system
   device: tun_3000
   mtu: 9000
-  auto-route: false
+  auto-route: true
   strict-route: true
   auto-detect-interface: true
   dns-hijack:
