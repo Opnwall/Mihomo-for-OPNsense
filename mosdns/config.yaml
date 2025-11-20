@@ -90,10 +90,6 @@ plugins:
           addr: "udp://223.5.5.5"
           enable_pipeline: true
 
-        - tag: unbound_dns
-          addr: "udp://127.0.0.1:5355"
-          idle_timeout: 10
-
   - tag: "ttl_sequence"
     type: sequence
     args:
@@ -119,8 +115,8 @@ plugins:
     args:
       primary: domestic_sequence
       secondary: remote_sequence
-      threshold: 800
-      always_standby: true
+      threshold: 1800
+      always_standby: false
 
   - tag: "main_sequence"
     type: sequence
@@ -135,6 +131,8 @@ plugins:
       - matches: "qname $remote_domain_set"
         exec: goto remote_sequence
       - matches: "qname $direct_domain_set"
+        exec: goto domestic_sequence
+      - matches: "resp_ip $direct_ip"
         exec: goto domestic_sequence
       - exec: $fallback
 
