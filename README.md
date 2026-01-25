@@ -31,12 +31,12 @@ sh uninstall.sh
 ```
 
 ## 配置教程
-1. 安装完成，导航到VPN>Proxy Suite 菜单，修改clash（ proxies和rules部分) 内容并保存。然后启动clash服务。
-2. 转到接口>分配，将tun_3000虚拟网卡添加为接口并启用，无需输入IPv4地址和网关。
+1. 安装完成，导航到VPN>Proxy Suite 菜单，修改clash（ proxies和rules部分) 内容并保存。
+2. 启动clash服务，转到接口>分配，将tun_3000虚拟网卡添加为接口并启用，无需输入IPv4地址和网关。
 3. 为避免端口冲突，将 Unbound DNS 端口修改为5355端口，并作为mosdns的默认上游DNS。
 5. 转到防火墙>规则，在tun接口添加一条any to any防火墙规则，允许tun子网访问。
 6. 设置完成，客户端访问 ip111.cn，检查分流是否正常。
 
 ## 其他事项
-1. 默认配置文件开启了clash api功能，可以访问 http://lan_ip:9090/ui 登录clash仪表盘查看代理连接信息。
+1. 默认配置文件开启了clash api功能，访问 http://lan_ip:9090/ui 登录仪表盘查看代理连接信息。
 2. 订阅转换可以设置定时任务自动更新。转到系统>设置>任务，添加”Renew Clash Subsribe”任务项即可。
