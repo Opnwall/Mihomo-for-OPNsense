@@ -30,7 +30,7 @@ sh install.sh
 sh uninstall.sh
 ```
 
-## 配置教程
+## 配置步骤
 1. 安装完成，导航到VPN>Proxy Suite 菜单，修改clash（ proxies和rules部分) 内容并保存。
 2. 启动clash服务，转到接口>分配，将tun_3000虚拟网卡添加为接口并启用，无需输入IPv4地址和网关。
 3. 为避免端口冲突，将 Unbound DNS 端口修改为5355端口，并作为mosdns的默认上游DNS。
