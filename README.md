@@ -34,4 +34,4 @@ sh uninstall.sh
 ## 其他事项
 1. 在 OPNsense上，stack 参数只能使用 gvisor栈。
 2. 默认配置文件开启了 api 功能，访问 http://lan_ip:9090/ui 登录仪表盘。
-3. 转到系统>设置>任务，添加”Renew mihomo Subsribe”和“mosdns rule_list updates”任务即可自动更新订阅和规则列表。
+3. 转到系统>设置>任务，添加”Renew mihomo Subsribe”和“mosdns rule_list updates”任务自动更新订阅和规则列表。
