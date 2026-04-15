@@ -1,9 +1,0 @@
-<menu>
-    <VPN>
-        <Magic VisibleName="Proxy Suite" cssClass="fa fa-lock fa-fw">
-            <clash VisibleName="Clash" order="10" url="/services_clash.php"/>
-			<mosdns VisibleName="MosDNS" order="20" url="/services_mosdns.php"/>
-            <sub VisibleName="Subscribe" order="30" url="/sub.php"/>
-        </Magic>
-    </VPN>
-</menu>
