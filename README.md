@@ -19,7 +19,6 @@
 ```bash
 sh install.sh
 ```
-![](images/install.png)
 ## 卸载命令
 ```bash
 sh uninstall.sh
