@@ -1,0 +1,23 @@
+port: 7890
+socks-port: 7891
+mode: rule
+log-level: info #在调试结果后，改为error或warn，减少日志输出。
+allow-lan: true
+external-controller: '0.0.0.0:9090'
+external-ui: /usr/local/etc/mihomo/ui
+tun:
+  enable: true
+  stack: gvisor #使用gvisor栈，提供更好的兼容性和性能，system栈可能在某些环境下存在兼容性问题。
+  device: tun_3000
+  mtu: 9000
+  auto-route: true
+  strict-route: true
+  auto-detect-interface: true
+  dns-hijack:
+    - any:53
+    - tcp://any:53
+dns:
+  enable: true
+  listen: 0.0.0.0:53
+  default-nameserver: 
+    - 127.0.0.1:5335 # 指向mosdns

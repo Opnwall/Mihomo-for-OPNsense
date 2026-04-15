@@ -1,0 +1,146 @@
+port: 7890
+socks-port: 7891
+mode: rule
+allow-lan: true
+log-level: debug  #在调试结果后，改为error或warn，减少日志输出。
+external-controller: '0.0.0.0:9090'
+external-ui: /usr/local/etc/mihomo/ui
+secret: 123456
+tun:
+  enable: true
+  stack: gvisor  #使用gvisor栈，提供更好的兼容性和性能，system栈可能在某些环境下存在兼容性问题。
+  device: tun_3000
+  mtu: 9000
+  auto-route: true
+  strict-route: true
+  auto-detect-interface: true
+  dns-hijack:
+    - any:53
+    - tcp://any:53
+dns:
+  enable: true
+  listen: 0.0.0.0:53
+  default-nameserver: 
+    - 127.0.0.1:5335  #指向mosdns监听地址
+sniffer:
+  enable: true
+  sniff:
+    HTTP:
+      ports: [80, 8080-8880]
+      override-destination: true
+    TLS:
+      ports: [443, 8443]
+    QUIC:
+      ports: [443, 8443]
+  skip-domain:
+    - "+.push.apple.com"
+proxies:
+- name: vless              
+  type: vless
+  server: 88.88.88.88                           
+  port: 1443                                
+  uuid: aa5aa394-378c-4710-92e8-a441acdee9b9   
+  network: tcp
+  udp: true
+  tls: true
+  flow: xtls-rprx-vision
+  servername: apple.com                 
+  reality-opts: 
+    public-key: q4vXvVtKwT67g4tYa7twV5dFZY_ApCTBaSJTGXZpXD4    
+    short-id: 89f095df                      
+  client-fingerprint: chrome                  
+
+- name: vmess                        
+  type: vmess
+  server: 88.88.88.88                        
+  port: 2443                                     
+  uuid: aa5aa394-378c-4710-92e8-a441acdee9b9       
+  alterId: 0
+  cipher: auto
+  udp: true
+  tls: false
+  network: ws
+  servername: www.bing.com                    
+  ws-opts:
+    path: "aa5aa394-378c-4710-92e8-a441acdee9b9-vm"                             
+    headers:
+      Host: www.bing.com                     
+
+- name: hy2                          
+  type: hysteria2                                      
+  server: 88.88.88.88                               
+  port: 3443                                
+  password: aa5aa394-378c-4710-92e8-a441acdee9b9                          
+  alpn:
+    - h3
+  sni: www.bing.com                               
+  skip-cert-verify: true
+  fast-open: true
+
+- name: tuic5                           
+  server: 88.88.88.88                      
+  port: 4443                                    
+  type: tuic
+  uuid: aa5aa394-378c-4710-92e8-a441acdee9b9       
+  password: aa5aa394-378c-4710-92e8-a441acdee9b9   
+  alpn: [h3]
+  disable-sni: true
+  reduce-rtt: true
+  udp-relay-mode: native
+  congestion-controller: bbr
+  sni: www.bing.com                                
+  skip-cert-verify: true
+
+- name: anytls
+  type: anytls
+  server: 88.88.88.88
+  port: 5443
+  password: aa5aa394-378c-4710-92e8-a441acdee9b9
+  client-fingerprint: chrome
+  udp: true
+  idle-session-check-interval: 30
+  idle-session-timeout: 30
+  sni: www.bing.com
+  skip-cert-verify: true
+
+proxy-groups:
+- name: 负载均衡
+  type: load-balance
+  url: https://www.gstatic.com/generate_204
+  interval: 300
+  strategy: round-robin
+  proxies:
+    - vless                              
+    - vmess
+    - hy2
+    - tuic5
+    - anytls
+
+- name: 自动选择
+  type: url-test
+  url: https://www.gstatic.com/generate_204
+  interval: 300
+  tolerance: 50
+  proxies:
+    - vless                              
+    - vmess
+    - hy2
+    - tuic5
+    - anytls
+    
+- name: 🌍选择代理节点
+  type: select
+  proxies:
+    - 负载均衡                                         
+    - 自动选择
+    - DIRECT
+    - vless                              
+    - vmess
+    - hy2
+    - tuic5
+    - anytls
+rules:
+  - GEOIP,LAN,DIRECT
+  - GEOIP,CN,DIRECT
+  - MATCH,🌍选择代理节点
+
