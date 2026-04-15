@@ -1,5 +1,5 @@
 ## Mihomo for OPNsense
-在 OPNsense 上运行Mihomo、Mosdns，实现透明代理。支持订阅、DNS 分流。可以进行配置修改、程序控制、日志查看。在 OPNsense 26.1.6 上测试通过。
+在 OPNsense 上运行mihomo、mosdns，实现透明代理。支持订阅、DNS 分流。可以进行配置修改、程序控制、日志查看。在 OPNsense 26.1.6 上测试通过。
 
 ![](images/proxy.png)
 
