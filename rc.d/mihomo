@@ -1,0 +1,61 @@
+#!/bin/sh
+
+# PROVIDE: mihomo
+# REQUIRE: NETWORKING
+# KEYWORD: shutdown
+
+. /etc/rc.subr
+
+name="mihomo"
+rcvar=mihomo_enable
+log_file="/var/log/mihomo.log"
+
+command=/usr/sbin/daemon
+command_args="-P /var/run/mihomo.pid /usr/local/bin/mihomo -d /usr/local/etc/mihomo/ >>$log_file"
+
+pidfile=/var/run/${name}.pid
+
+status_cmd=mihomo_status
+
+
+
+: ${mihomo_enable="NO"}
+
+log_message() {
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" >> $log_file
+}
+
+mihomo_status()
+{
+    if [ -n "$rc_pid" ]; then
+        log_message "${name} is running as pid $rc_pid."
+        echo "${name} is running as pid $rc_pid."
+        return 0
+    else
+        log_message "${name} is not running."
+        echo "${name} is not running."
+    fi
+}
+
+start_mihomo()
+{
+    log_message "Starting ${name}..."
+    $command $command_args >> $log_file 2>&1 &
+    echo $! > /var/run/mihomo.pid
+    log_message "${name} started with pid $(cat /var/run/mihomo.pid)."
+}
+
+stop_mihomo()
+{
+    log_message "Stopping ${name}..."
+    if [ -f /var/run/mihomo.pid ]; then
+        kill $(cat /var/run/mihomo.pid)
+        rm -f /var/run/mihomo.pid
+        log_message "${name} stopped."
+    else
+        log_message "No ${name} pid file found."
+    fi
+}
+
+load_rc_config mihomo
+run_rc_command $1

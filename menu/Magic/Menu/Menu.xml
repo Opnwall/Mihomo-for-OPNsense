@@ -1,0 +1,9 @@
+<menu>
+    <VPN>
+        <Magic VisibleName="Proxy" cssClass="fa fa-lock fa-fw">
+            <mihomo VisibleName="Mihomo" order="10" url="/services_mihomo.php"/>
+			<mosdns VisibleName="MosDNS" order="20" url="/services_mosdns.php"/>
+            <sub VisibleName="Subscribe" order="30" url="/sub.php"/>
+        </Magic>
+    </VPN>
+</menu>

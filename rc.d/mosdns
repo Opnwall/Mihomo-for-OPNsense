@@ -1,0 +1,26 @@
+#!/bin/sh
+
+# PROVIDE: mosdns
+# REQUIRE: SERVERS
+# KEYWORD: shutdown
+
+. /etc/rc.subr
+
+name="mosdns"
+rcvar="mosdns_enable"  # 允许通过 rc.conf 控制启用
+
+pidfile="/var/run/${name}.pid"
+logfile="/var/log/${name}.log"
+command="/usr/sbin/daemon"
+mosdns_env="IS_DAEMON=1"  # 设置环境变量
+
+# daemon 参数
+daemon_args="-P ${pidfile} -r -f -o ${logfile} -t ${name}:daemon"
+# mosdns 启动命令
+command_args="${daemon_args} /usr/local/bin/mosdns start --as-service -d /usr/local/etc/mosdns/"
+
+# 加载用户定义的配置
+load_rc_config $name
+: ${mosdns_enable:="NO"}  # 默认不启用
+
+run_rc_command "$1"
