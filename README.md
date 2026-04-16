@@ -32,6 +32,6 @@ sh uninstall.sh
 5. 启动服务，客户端访问 ip111.cn，检查分流是否正常。
 
 ## 其他事项
-1. 在 OPNsense上，stack 参数只能使用 gvisor栈。
+1. 经测试 OPNsense的mihomo 配置文件stack 参数只能使用 gvisor栈。
 2. 默认配置文件开启了 api 功能，访问 http://lan_ip:9090/ui 登录仪表盘。
 3. 转到系统>设置>任务，添加”Renew mihomo Subsribe”和“mosdns rule_list updates”任务，自动更新订阅和规则列表。
